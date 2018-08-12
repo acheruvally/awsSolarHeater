@@ -1,0 +1,26 @@
+extends layout
+block content
+  h1= title
+  p #{title} Listing
+
+  table
+    thead
+      tr
+        th Sensor ID
+        th Created At
+        th Measured At
+        th FlowMeter
+        th TDS
+        th Temperature
+        
+
+
+    tbody
+      - each item in rows
+        tr
+          td= item.SensorID
+          td= item.CreatedAt
+          td= item.MeasuredAt
+          td= item.FlowMeter
+          td= item.TDS
+          td= item.Temperature

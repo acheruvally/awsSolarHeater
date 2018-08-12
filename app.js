@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 var express = require('express');
 fs = require('fs'),
-html = fs.readFileSync('./web/index.html');    
+html = fs.readFileSync('index.html');    
 
 var connection = mysql.createConnection({
 host : process.env.RDS_HOSTNAME,
@@ -10,7 +10,10 @@ password : process.env.RDS_PASSWORD,
 port : process.env.RDS_PORT
 });
 
+
 app = express(),
+//set view engine
+app.set("view engine","jade")
 port = process.env.PORT || 3000;
 
   connection.connect(function(err) {
@@ -23,19 +26,32 @@ port = process.env.PORT || 3000;
   });
 
 
-  app.get('/', function(req, res){
-    res.write(html);
+  app.get('/solarHeaterData', function(req, res){
+    
+    connection.query("SELECT * FROM `iot`.`solarheaterdata`", (err, rows, fields) => {
+      if (!err)
+          {
+          res.send(JSON.stringify(rows));
+          console.log(JSON.stringify(rows));}
+          else
+          console.log(err);
+      endif    
+  })
+  
+  
+  
   })
   
 
-  app.get('/solarHeaterData', function(req, res){
+  app.get('/solarHeaterUI', function(req, res){
   
    
     
   connection.query("SELECT * FROM `iot`.`solarheaterdata`", (err, rows, fields) => {
     if (!err)
         {
-        res.send(JSON.stringify(rows));
+        // res.send(JSON.stringify(rows));
+        res.render('solarHeaterData', { title: 'Solar Heater Data', rows: rows });
         console.log(JSON.stringify(rows));}
         else
         console.log(err);
